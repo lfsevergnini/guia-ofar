@@ -6,7 +6,7 @@ var app = {};
 app.db = null;
       
 app.openDb = function() {
-    app.db = window.openDatabase("Todo");
+    app.db = window.sqlitePlugin.openDatabase("Todo");
 	//app.db = window.openDatabase("Todo", "1.0", "Cordova Demo", 200000);
 }
       
