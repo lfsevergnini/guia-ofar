@@ -36,7 +36,7 @@ h1
 
 .content
 {
-	margin: 80px 5px;
+	margin: 80px 10px;
 	text-align: center;
 }
 
@@ -50,8 +50,7 @@ h1
 	background: rgba(49, 52, 55, 0.5);
 	box-shadow: 1px 1px 1px #6C7077;
 	text-shadow: #7B7D82 1px 1px 1px;
-	margin: 5px 3px;
-	width: 60px;
+	width: 75px;
 }
 
 .button:active
@@ -84,7 +83,7 @@ h1
 	background-color: #EFEFEF;
 	font-style: italic;
 	color: #A7A7A7;
-	width: 200px;
+	min-width: 180px;
 	padding: 7px 10px;
 	border-radius: 3px;
 	border-width: 1px;
@@ -92,6 +91,7 @@ h1
 	border-color: rgb(180, 180, 180);
 	border-bottom-color: rgb(255, 255, 255);
 	box-shadow: 0 -1px 0 #3C3C3C;
+    margin-right:15px;
 }
 
 .horizontalLine
@@ -106,25 +106,42 @@ h1
 #todoItems
 {
 	border-radius: 5px;
-	border-width: 1px;
-	border-style: solid;
-	border-top-color: rgba(0, 0, 0, 0);
-	border-right-color: rgba(0, 0, 0, 0.2);
-	border-bottom-color: rgba(255, 255, 255, 0.5);
-	border-left-color: rgba(0, 0, 0, 0.2);
-	background-color: rgba(103, 109, 119, 0.85);
-	margin: 10px auto;
-	box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.7);
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	background-color: rgba(0, 0, 0, 0.2);
 	color: #fff;
-	line-height: 20px;
 	font-weight: bold;
 	font-size: 15px;
 	text-align: left;
-	max-width: 268px;
-	min-height: 20px;
-	padding: 10px 18px;
+    list-style-type: none;
+    -webkit-padding-start: 0px;
+    margin:5px;
 }
-
+#todoItems > li {
+    line-height: 3em;
+    border-bottom:1px solid rgba(255, 255, 255, 0.3);
+    margin:0px 1px;
+    position:relative;
+}
+#todoItems > li:first-child {
+    border-radius:4px 4px 0px 0px;
+}
+#todoItems > li:last-child {
+    border-bottom:1px solid transparent;
+    border-radius:0px 0px 4px 4px;
+}
+#todoItems > li:active,
+#todoItems > li:focus{
+    background: -moz-linear-gradient(top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.5)), color-stop(100%,rgba(0,0,0,0.2))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.2) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.2) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.2) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.2) 100%); /* W3C */
+}
+#todoItems > li:active > .button,
+#todoItems > li:focus > .button {
+    opacity:1;
+}
 .footer
 {
 	width: 100%;
@@ -159,4 +176,38 @@ h1
 	color: #ABADB0;
 	padding-right: 12px;
 	padding-top: 2px;
+}
+
+.list-label 
+{
+    color:#639ecd;
+    text-align:left;
+    font-size:18px;
+    font-weight:bold;
+    text-shadow: 0px 0px 3px rgba(0,0,0,0.5);
+    margin-top: 15px;
+    margin-left: 10px;
+}
+.clear {
+    clear:both;
+}
+.button.delete {
+    float:right;
+    margin-top: 9px;
+    margin-right: 5px;
+    text-decoration:none;
+    text-align:center;
+    background:#ef3e33;
+    border:none;
+    opacity:0;
+}
+.todo-icon{
+    width:30px;
+    height:30px;
+    background-image: url("img/tick.png");
+	background-repeat: repeat-x;
+    display:inline-block;
+    top: 7px;
+    margin-left:5px;
+    position: relative;
 }

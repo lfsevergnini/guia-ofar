@@ -6,7 +6,8 @@ var app = {};
 app.db = null;
       
 app.openDb = function() {
-	app.db = window.sqlitePlugin.openDatabase("Todo");
+    app.db = window.openDatabase("Todo");
+	//app.db = window.openDatabase("Todo", "1.0", "Cordova Demo", 200000);
 }
       
 app.createTable = function() {
@@ -46,7 +47,7 @@ app.deleteTodo = function(id) {
 
 app.refresh = function() {
 	var renderTodo = function (row) {
-		return "<li>" + row.todo + " [<a href='javascript:void(0);'  onclick='app.deleteTodo(" + row.ID + ");'>Delete</a>]</li>";
+		return "<li>" + "<div class='todo-icon'></div>" + row.todo + "<a class='button delete' href='javascript:void(0);'  onclick='app.deleteTodo(" + row.ID + ");'>Delete</a><div class='clear'></div></li>";
 	}
     
 	var render = function (tx, rs) {
