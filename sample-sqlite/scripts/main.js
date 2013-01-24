@@ -47,7 +47,7 @@ app.deleteTodo = function(id) {
 
 app.refresh = function() {
 	var renderTodo = function (row) {
-		return "<li>" + "<div class='todo-icon'></div>" + row.todo + "<a class='button delete' href='javascript:void(0);'  onclick='app.deleteTodo(" + row.ID + ");'>Delete</a>" + "<div class='clear'></div>" + "</li>";
+		return "<li>" + "<div class='todo-check'></div>" + row.todo + "<a class='button delete' href='javascript:void(0);'  onclick='app.deleteTodo(" + row.ID + ");'>" + "<div class='todo-delete'></div>" + "</a>" + "<div class='clear'></div>" + "</li>";
 	}
     
 	var render = function (tx, rs) {

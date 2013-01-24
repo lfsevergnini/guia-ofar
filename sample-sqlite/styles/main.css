@@ -94,15 +94,6 @@ h1
     margin-right:15px;
 }
 
-.horizontalLine
-{
-	border: none;
-	border-top: 1px solid #B3B7BF;
-	box-shadow: 0px -1px 0px #565961;
-	margin-top: 20px;
-	margin-bottom: 20px;
-}
-
 #todoItems
 {
 	border-radius: 5px;
@@ -123,12 +114,15 @@ h1
     position:relative;
 }
 #todoItems > li:first-child {
-    border-radius:4px 4px 0px 0px;
+    border-top-left-radius:4px;
+    border-top-right-radius:4px;
 }
 #todoItems > li:last-child {
     border-bottom:1px solid transparent;
-    border-radius:0px 0px 4px 4px;
+    border-bottom-left-radius:4px;
+    border-bottom-right-radius:4px;
 }
+
 #todoItems > li:active,
 #todoItems > li:focus{
     background: -moz-linear-gradient(top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 100%); /* FF3.6+ */
@@ -138,10 +132,7 @@ h1
     background: -ms-linear-gradient(top, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.2) 100%); /* IE10+ */
     background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.2) 100%); /* W3C */
 }
-#todoItems > li:active > .button,
-#todoItems > li:focus > .button {
-    opacity:1;
-}
+
 .footer
 {
 	width: 100%;
@@ -198,16 +189,27 @@ h1
     text-decoration:none;
     text-align:center;
     background:#ef3e33;
+    border-radius:25px;
+    width:25px;
+    height:25px;
     border:none;
-    opacity:0;
+    position: relative;
 }
-.todo-icon{
+.todo-check{
     width:30px;
     height:30px;
     background-image: url("img/tick.png");
-	background-repeat: repeat-x;
+	background-repeat: no-repeat;
     display:inline-block;
     top: 7px;
     margin-left:5px;
     position: relative;
+}
+.todo-delete {
+    width: 12px;
+	height: 3px;
+	background: #fff;
+    position: absolute;
+    top: 11px;
+    left: 6px;
 }
