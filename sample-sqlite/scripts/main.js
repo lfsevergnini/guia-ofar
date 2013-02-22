@@ -6,8 +6,13 @@ var app = {};
 app.db = null;
       
 app.openDb = function() {
-    app.db = window.sqlitePlugin.openDatabase("Todo");
-	//app.db = window.openDatabase("Todo", "1.0", "Cordova Demo", 200000);
+    if(window.sqlitePlugin !== undefined) {
+        app.db = window.sqlitePlugin.openDatabase("Todo");
+    } else {
+        // For debugin in simulator fallback to native SQL Lite
+        console.log("Use built in SQL Lite");
+        app.db = window.openDatabase("Todo", "1.0", "Cordova Demo", 200000);
+    }
 }
       
 app.createTable = function() {
