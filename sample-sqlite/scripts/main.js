@@ -74,6 +74,7 @@ app.refresh = function() {
 }
       
 function init() {
+    navigator.splashscreen.hide();
 	app.openDb();
 	app.createTable();
 	app.refresh();
