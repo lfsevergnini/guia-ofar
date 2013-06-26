@@ -1,6 +1,8 @@
 //Based on http://www.html5rocks.com/en/tutorials/webdatabase/todo/
 
 document.addEventListener("deviceready", init, false);
+//Activate :active state on device
+document.addEventListener("touchstart", function() {}, false);
 
 var app = {};
 app.db = null;
