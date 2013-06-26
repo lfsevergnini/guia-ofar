@@ -11,12 +11,17 @@
 			<h1>SQLite</h1>
 		</header>
 		<div class="content">
-			<div>
+            <div class="input-area ch30">
                 <input class="inputBox" type="text" id="todo" placeholder="Add New Item" />
-				<button class="button" id="addButton" onclick="addTodo(); return false;">Add</button>
+                <button class="button" id="addButton" onclick="addTodo(); return false;">Add</button>
 			</div>
-            <div class="list-label">Todo List:</div>
-            <ul id="todoItems"></ul>
+            <div class="result-area ch70">
+                <div class="results">
+                    <div class="desc">Todo List:</div>
+                    <ul id="todoItems"></ul>
+                </div>
+                <div class="separator"></div>
+            </div> 
 		</div>
 		<footer class="footer">
 			<div>Cordova Plugins Samples</div> 
