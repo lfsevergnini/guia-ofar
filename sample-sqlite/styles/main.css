@@ -204,12 +204,8 @@ body
     border-radius: 3px;
     color: #4d5d6b;
     background: transparent;
-    margin-left:12px;
-    margin-top:12px;
-    width: 140px;
+    width: 110px;
     height: 32px;
-    display: inline;
-    float: left;
 }
      
 .button:active
