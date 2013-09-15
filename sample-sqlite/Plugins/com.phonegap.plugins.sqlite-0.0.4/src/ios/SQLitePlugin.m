@@ -148,7 +148,9 @@ static int base64_encode_blockend(char* code_out,
     self = (SQLitePlugin*)[super initWithWebView:theWebView];
     if (self) {
         openDBs = [NSMutableDictionary dictionaryWithCapacity:0];
+#if !__has_feature(objc_arc)
         [openDBs retain];
+#endif
 
         NSString *docs = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
         NSLog(@"Detected docs path: %@", docs);
@@ -216,6 +218,8 @@ static int base64_encode_blockend(char* code_out,
     }
 
     [self.commandDelegate sendPluginResult:pluginResult callbackId: command.callbackId];
+
+    // NSLog(@"open cb finished ok");
 }
 
 -(void) close: (CDVInvokedUrlCommand*)command
@@ -272,28 +276,30 @@ static int base64_encode_blockend(char* code_out,
 {
     NSMutableDictionary *options = [command.arguments objectAtIndex:0];
     NSMutableArray *results = [NSMutableArray arrayWithCapacity:0];
+    NSMutableDictionary *dbargs = [options objectForKey:@"dbargs"];
     NSMutableArray *executes = [options objectForKey:@"executes"];
+
     CDVPluginResult* pluginResult;
-    NSDictionary *error = nil;
 
     @synchronized(self) {
         for (NSMutableDictionary *dict in executes) {
-            CDVPluginResult *result = [self executeSqlWithDict:dict];
+            CDVPluginResult *result = [self executeSqlWithDict:dict andArgs:dbargs];
             if ([result.status intValue] == CDVCommandStatus_ERROR) {
-                error = [result message];
-                break;
+                /* add error with result.message: */
+                NSMutableDictionary *r = [NSMutableDictionary dictionaryWithCapacity:0];
+                [r setObject:[dict objectForKey:@"qid"] forKey:@"qid"];
+                [r setObject:result.message forKey:@"error"];
+                [results addObject: r];
+            } else {
+                /* add result with result.message: */
+                NSMutableDictionary *r = [NSMutableDictionary dictionaryWithCapacity:0];
+                [r setObject:[dict objectForKey:@"qid"] forKey:@"qid"];
+                [r setObject:result.message forKey:@"result"];
+                [results addObject: r];
             }
-            [results addObject: result.message];
         }
 
-        if (!error) {
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:results];
-        } else {
-            NSMutableDictionary *resultsAndError = [NSMutableDictionary dictionaryWithCapacity:2];
-            [resultsAndError setObject:results forKey:@"results"];
-            [resultsAndError setObject:error forKey:@"error"];
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:resultsAndError];
-        }
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:results];
     }
 
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -309,16 +315,20 @@ static int base64_encode_blockend(char* code_out,
 -(void) executeSql: (CDVInvokedUrlCommand*)command
 {
     NSMutableDictionary *options = [command.arguments objectAtIndex:0];
+    NSMutableDictionary *dbargs = [options objectForKey:@"dbargs"];
+    NSMutableDictionary *ex = [options objectForKey:@"ex"];
+
     CDVPluginResult* pluginResult;
     @synchronized (self) {
-        pluginResult = [self executeSqlWithDict: options];
+        pluginResult = [self executeSqlWithDict: ex andArgs: dbargs];
     }
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
--(CDVPluginResult*) executeSqlWithDict: (NSMutableDictionary*)options
+-(CDVPluginResult*) executeSqlWithDict: (NSMutableDictionary*)options andArgs: (NSMutableDictionary*)dbargs
 {
-    NSString *dbPath = [self getDBPath:[options objectForKey:@"path"]];
+    NSString *dbPath = [self getDBPath:[dbargs objectForKey:@"dbname"]];
+
     NSMutableArray *query_parts = [options objectForKey:@"query"];
     NSString *query = [query_parts objectAtIndex:0];
 
@@ -478,24 +488,28 @@ static int base64_encode_blockend(char* code_out,
         sqlite3_close (db);
     }
 
+#if !__has_feature(objc_arc)
     [openDBs release];
     [appDocsPath release];
     [super dealloc];
+#endif
 }
 
 +(NSDictionary *)captureSQLiteErrorFromDb:(sqlite3 *)db
 {
     int code = sqlite3_errcode(db);
     int webSQLCode = [SQLitePlugin mapSQLiteErrorCode:code];
+#if INCLUDE_SQLITE_ERROR_INFO
+    int extendedCode = sqlite3_extended_errcode(db);
+#endif
+    const char *message = sqlite3_errmsg(db);
 
     NSMutableDictionary *error = [NSMutableDictionary dictionaryWithCapacity:4];
 
     [error setObject:[NSNumber numberWithInt:webSQLCode] forKey:@"code"];
+    [error setObject:[NSString stringWithUTF8String:message] forKey:@"message"];
 
 #if INCLUDE_SQLITE_ERROR_INFO
-    int extendedCode = sqlite3_extended_errcode(db);
-    const char *message = sqlite3_errmsg(db);
-
     [error setObject:[NSNumber numberWithInt:code] forKey:@"sqliteCode"];
     [error setObject:[NSNumber numberWithInt:extendedCode] forKey:@"sqliteExtendedCode"];
     [error setObject:[NSString stringWithUTF8String:message] forKey:@"sqliteMessage"];
