@@ -5,7 +5,7 @@
  * Copyright (c) 2005-2010, Nitobi Software Inc.
  * Copyright (c) 2010, IBM Corporation
  */
-package com.phonegap.plugin.sqlitePlugin;
+package org.pgsqlite;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,8 +17,8 @@ import java.lang.Number;
 
 import java.util.HashMap;
 
-import org.apache.cordova.api.CordovaPlugin;
-import org.apache.cordova.api.CallbackContext;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CallbackContext;
 
 import android.database.Cursor;
 
@@ -30,16 +30,25 @@ import android.util.Log;
 public class SQLitePlugin extends CordovaPlugin
 {
 	/**
-	 * Multiple database map.
+	 * Multiple database map (static).
 	 */
-	HashMap<String, SQLiteDatabase> dbmap;
+	static HashMap<String, SQLiteDatabase> dbmap = new HashMap<String, SQLiteDatabase>();
 
 	/**
-	 * Constructor.
+	 * Get a SQLiteDatabase reference from the db map (public static accessor).
+	 *
+	 * @param dbname
+	 *            The name of the database.
+	 *
 	 */
-	public SQLitePlugin() {
-		dbmap = new HashMap<String, SQLiteDatabase>();
+	public static SQLiteDatabase getSQLiteDatabase(String dbname)
+	{
+		return dbmap.get(dbname);
 	}
+
+	/**
+	 * NOTE: Using default constructor, explicit constructor no longer required.
+	 */
 
 	/**
 	 * Executes the request and returns PluginResult.
@@ -51,7 +60,7 @@ public class SQLitePlugin extends CordovaPlugin
 	 *            JSONArry of arguments for the plugin.
 	 *
 	 * @param cbc
-	 *            Callback context from Cordova API (not used here)
+	 *            Callback context from Cordova API
 	 *
 	 */
 	@Override
@@ -72,21 +81,40 @@ public class SQLitePlugin extends CordovaPlugin
 				String dbName = args.getString(0);
 				String query = args.getString(1);
 
-				Cursor myCursor = this.getDatabase(dbName).rawQuery(query, null);
-				this.processPragmaResults(myCursor, id);
+				JSONArray jparams = (args.length() < 3) ? null : args.getJSONArray(2);
+
+				String[] params = null;
+
+				if (jparams != null) {
+					params = new String[jparams.length()];
+
+					for (int j = 0; j < jparams.length(); j++) {
+						if (jparams.isNull(j))
+							params[j] = "";
+						else
+							params[j] = jparams.getString(j);
+					}
+				}
+
+				Cursor myCursor = this.getDatabase(dbName).rawQuery(query, params);
+
+				String result = this.getRowsResultFromQuery(myCursor).getJSONArray("rows").toString();
+
+				this.sendJavascriptCB("window.SQLitePluginCallback.p1('" + id + "', " + result + ");");
 			}
-			else if (action.equals("executeSqlBatch"))
+			else if (action.equals("executeSqlBatch") || action.equals("executeBatchTransaction") || action.equals("backgroundExecuteSqlBatch"))
 			{
 				String[] 	queries 	= null;
 				String[] 	queryIDs 	= null;
-				String 		trans_id 	= null;
-				JSONObject 	a 			= null;
+
 				JSONArray 	jsonArr 	= null;
 				int 		paramLen	= 0;
 				JSONArray[] 	jsonparams 	= null;
 
-				String dbName = args.getString(0);
-				JSONArray txargs = args.getJSONArray(1);
+				JSONObject allargs = args.getJSONObject(0);
+				JSONObject dbargs = allargs.getJSONObject("dbargs");
+				String dbName = dbargs.getString("dbname");
+				JSONArray txargs = allargs.getJSONArray("executes");
 
 				if (txargs.isNull(0)) {
 					queries = new String[0];
@@ -98,19 +126,21 @@ public class SQLitePlugin extends CordovaPlugin
 
 					for (int i = 0; i < len; i++)
 					{
-						a 			= txargs.getJSONObject(i);
-						queries[i] 	= a.getString("query");
-						queryIDs[i] = a.getString("query_id");
-						trans_id 	= a.getString("trans_id");
+						JSONObject a	= txargs.getJSONObject(i);
+						queries[i] 	= a.getString("sql");
+						queryIDs[i] = a.getString("qid");
 						jsonArr 	= a.getJSONArray("params");
 						paramLen	= jsonArr.length();
 						jsonparams[i] 	= jsonArr;
 					}
 				}
-				if(trans_id != null)
-					this.executeSqlBatch(dbName, queries, jsonparams, queryIDs, trans_id);
+
+				boolean ex = action.equals("executeBatchTransaction");
+
+				if (action.equals("backgroundExecuteSqlBatch"))
+					this.executeSqlBatchInBackground(dbName, queries, jsonparams, queryIDs, cbc);
 				else
-					Log.v("error", "null trans_id");
+					this.executeSqlBatch(dbName, queries, jsonparams, queryIDs, cbc);
 			}
 
 			return true;
@@ -128,10 +158,10 @@ public class SQLitePlugin extends CordovaPlugin
 	 */
 	@Override
 	public void onDestroy() {
-		while (!this.dbmap.isEmpty()) {
-			String dbname = this.dbmap.keySet().iterator().next();
+		while (!dbmap.isEmpty()) {
+			String dbname = dbmap.keySet().iterator().next();
 			this.closeDatabase(dbname);
-			this.dbmap.remove(dbname);
+			dbmap.remove(dbname);
 		}
 	}
 
@@ -176,7 +206,7 @@ public class SQLitePlugin extends CordovaPlugin
 		if (mydb != null)
 		{
 			mydb.close();
-			this.dbmap.remove(dbName);
+			dbmap.remove(dbName);
 		}
 	}
 
@@ -190,6 +220,39 @@ public class SQLitePlugin extends CordovaPlugin
 	private SQLiteDatabase getDatabase(String dbname)
 	{
 		return dbmap.get(dbname);
+	}
+
+	/**
+	 * Executes a batch request IN BACKGROUND THREAD and sends the results via sendJavascriptCB().
+	 *
+	 * @param dbName
+	 *            The name of the database.
+	 *
+	 * @param queryarr
+	 *            Array of query strings
+	 *
+	 * @param jsonparams
+	 *            Array of JSON query parameters
+	 *
+	 * @param queryIDs
+	 *            Array of query ids
+	 *
+	 * @param cbc
+	 *            Callback context from Cordova API
+	 *
+	 */
+	private void executeSqlBatchInBackground(final String dbName,
+		final String[] queryarr, final JSONArray[] jsonparams, final String[] queryIDs, final CallbackContext cbc)
+	{
+		final SQLitePlugin myself = this;
+
+		this.cordova.getThreadPool().execute(new Runnable() {
+			public void run() {
+				synchronized(myself) {
+					myself.executeSqlBatch(dbName, queryarr, jsonparams, queryIDs, cbc);
+				}
+			}
+		});
 	}
 
 	/**
@@ -207,28 +270,60 @@ public class SQLitePlugin extends CordovaPlugin
 	 * @param queryIDs
 	 *            Array of query ids
 	 *
-	 * @param tx_id
-	 *            Transaction id
+	 * @param cbc
+	 *            Callback context from Cordova API
 	 *
 	 */
-	private void executeSqlBatch(String dbname, String[] queryarr, JSONArray[] jsonparams, String[] queryIDs, String tx_id)
+	private void executeSqlBatch(String dbname, String[] queryarr, JSONArray[] jsonparams, String[] queryIDs, CallbackContext cbc)
 	{
 		SQLiteDatabase mydb = this.getDatabase(dbname);
 
 		if (mydb == null) return;
 
-		try {
-			mydb.beginTransaction();
+		String query = "";
+		String query_id = "";
+		int len = queryarr.length;
 
-			String query = "";
-			String query_id = "";
-			int len = queryarr.length;
+		JSONArray batchResults = new JSONArray();
 
-			for (int i = 0; i < len; i++) {
+		for (int i = 0; i < len; i++) {
+			query_id = queryIDs[i];
+
+			JSONObject queryResult = null;
+			String errorMessage = null;
+
+			try {
 				query = queryarr[i];
-				query_id = queryIDs[i];
+
+				// /* OPTIONAL changes for new Android SDK from HERE:
+				if (android.os.Build.VERSION.SDK_INT >= 11 &&
+				    (query.toLowerCase().startsWith("update") ||
+				     query.toLowerCase().startsWith("delete")))
+				{
+					SQLiteStatement myStatement = mydb.compileStatement(query);
+
+					if (jsonparams != null) {
+						for (int j = 0; j < jsonparams[i].length(); j++) {
+							if (jsonparams[i].get(j) instanceof Float || jsonparams[i].get(j) instanceof Double ) {
+								myStatement.bindDouble(j + 1, jsonparams[i].getDouble(j));
+							} else if (jsonparams[i].get(j) instanceof Number) {
+								myStatement.bindLong(j + 1, jsonparams[i].getLong(j));
+							} else if (jsonparams[i].isNull(j)) {
+								myStatement.bindNull(j + 1);
+							} else {
+								myStatement.bindString(j + 1, jsonparams[i].getString(j));
+							}
+						}
+					}
+
+					int rowsAffected = myStatement.executeUpdateDelete();
+
+					queryResult = new JSONObject();
+					queryResult.put("rowsAffected", rowsAffected);
+				} else // to HERE. */
 				if (query.toLowerCase().startsWith("insert") && jsonparams != null) {
 					SQLiteStatement myStatement = mydb.compileStatement(query);
+
 					for (int j = 0; j < jsonparams[i].length(); j++) {
 						if (jsonparams[i].get(j) instanceof Float || jsonparams[i].get(j) instanceof Double ) {
 							myStatement.bindDouble(j + 1, jsonparams[i].getDouble(j));
@@ -240,11 +335,14 @@ public class SQLitePlugin extends CordovaPlugin
 							myStatement.bindString(j + 1, jsonparams[i].getString(j));
 						}
 					}
-					long insertId = myStatement.executeInsert();
 
-					String result = "{'insertId':'" + insertId + "'}";
-					this.sendJavascriptCB("window.SQLitePluginTransactionCB.queryCompleteCallback('" +
-						tx_id + "','" + query_id + "', " + result + ");");
+					long insertId = myStatement.executeInsert();
+					
+					int rowsAffected = (insertId == -1) ? 0 : 1;
+
+					queryResult = new JSONObject();
+					queryResult.put("insertId", insertId);
+					queryResult.put("rowsAffected", rowsAffected);
 				} else {
 					String[] params = null;
 
@@ -261,70 +359,48 @@ public class SQLitePlugin extends CordovaPlugin
 
 					Cursor myCursor = mydb.rawQuery(query, params);
 
-					if(query_id.length() > 0)
-						this.processResults(myCursor, query_id, tx_id);
+					if (query_id.length() > 0) {
+						queryResult = this.getRowsResultFromQuery(myCursor);
+					}
 
 					myCursor.close();
 				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				errorMessage = ex.getMessage();
+				Log.v("executeSqlBatch", "SQLitePlugin.executeSql[Batch](): Error=" +  errorMessage);
 			}
-			mydb.setTransactionSuccessful();
+
+			try {
+				if (queryResult != null) {
+					JSONObject r = new JSONObject();
+					r.put("qid", query_id);
+
+					r.put("type", "success");
+					r.put("result", queryResult);
+
+					batchResults.put(r);
+				} else if (errorMessage != null) {
+					JSONObject r = new JSONObject();
+					r.put("qid", query_id);
+
+					r.put("type", "error");
+					r.put("result", errorMessage);
+
+					batchResults.put(r);
+				}
+			} catch (JSONException ex) {
+				ex.printStackTrace();
+				Log.v("executeSqlBatch", "SQLitePlugin.executeSql[Batch](): Error=" +  ex.getMessage());
+				// TODO what to do?
+			}
 		}
-		catch (SQLiteException ex) {
-			ex.printStackTrace();
-			Log.v("executeSqlBatch", "SQLitePlugin.executeSql(): Error=" +  ex.getMessage());
-			this.sendJavascriptCB("window.SQLitePluginTransactionCB.txErrorCallback('" + tx_id + "', '"+ex.getMessage()+"');");
-		} catch (JSONException ex) {
-			ex.printStackTrace();
-			Log.v("executeSqlBatch", "SQLitePlugin.executeSql(): Error=" +  ex.getMessage());
-			this.sendJavascriptCB("window.SQLitePluginTransactionCB.txErrorCallback('" + tx_id + "', '"+ex.getMessage()+"');");
-		}
-		finally {
-			mydb.endTransaction();
-			Log.v("executeSqlBatch", tx_id);
-			this.sendJavascriptCB("window.SQLitePluginTransactionCB.txCompleteCallback('" + tx_id + "');");
-		}
+
+		cbc.success(batchResults);
 	}
 
 	/**
-	 * Process query results.
-	 *
-	 * @param cur
-	 *            Cursor into query results
-	 *
-	 * @param query_id
-	 *            Query id
-	 *
-	 * @param tx_id
-	 *            Transaction id
-	 *
-	 */
-	private void processResults(Cursor cur, String query_id, String tx_id)
-	{
-		String result = this.results2string(cur);
-
-		this.sendJavascriptCB("window.SQLitePluginTransactionCB.queryCompleteCallback('" +
-			tx_id + "','" + query_id + "', " + result + ");");
-	}
-
-	/**
-	 * Process query results.
-	 *
-	 * @param cur
-	 *            Cursor into query results
-	 *
-	 * @param id
-	 *            Caller db id
-	 *
-	 */
-	private void processPragmaResults(Cursor cur, String id)
-	{
-		String result = this.results2string(cur);
-
-		this.sendJavascriptCB("window.SQLitePluginCallback.p1('" + id + "', " + result + ");");
-	}
-
-	/**
-	 * Convert results cursor to JSON string.
+	 * Get rows results from query cursor.
 	 *
 	 * @param cur
 	 *            Cursor into query results
@@ -332,13 +408,13 @@ public class SQLitePlugin extends CordovaPlugin
 	 * @return results in string form
 	 *
 	 */
-	private String results2string(Cursor cur)
+	private JSONObject getRowsResultFromQuery(Cursor cur)
 	{
-		String result = "[]";
+		JSONObject rowsResult = new JSONObject();
 
 		// If query result has rows
 		if (cur.moveToFirst()) {
-			JSONArray fullresult = new JSONArray();
+			JSONArray rowsArrayResult = new JSONArray();
 			String key = "";
 			int colCount = cur.getColumnCount();
 
@@ -377,7 +453,7 @@ public class SQLitePlugin extends CordovaPlugin
 						}
 					}
 
-					fullresult.put(row);
+					rowsArrayResult.put(row);
 
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -385,10 +461,14 @@ public class SQLitePlugin extends CordovaPlugin
 
 			} while (cur.moveToNext());
 
-			result = fullresult.toString();
+			try {
+				rowsResult.put("rows", rowsArrayResult);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
 
-		return result;
+		return rowsResult;
 	}
 
 	/**
@@ -401,5 +481,23 @@ public class SQLitePlugin extends CordovaPlugin
 	private void sendJavascriptCB(String cb)
 	{
 		this.webView.sendJavascript(cb);
+	}
+
+	/**
+	 * Send Javascript callback on GUI thread.
+	 *
+	 * @param cb
+	 *            Javascript callback command to send
+	 *
+	 */
+	private void sendJavascriptToGuiThread(final String cb)
+	{
+		final SQLitePlugin myself = this;
+
+		this.cordova.getActivity().runOnUiThread(new Runnable() {
+			public void run() {
+				myself.webView.sendJavascript(cb);
+			}
+		});
 	}
 }
