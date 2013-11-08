@@ -8,12 +8,13 @@ var app = {};
 app.db = null;
       
 app.openDb = function() {
-    if(window.sqlitePlugin !== undefined) {
-        app.db = window.sqlitePlugin.openDatabase("Todo");
-    } else {
+   if (device.uuid == "e0101010d38bde8e6740011221af335301010333" || device.uuid == "e0908060g38bde8e6740011221af335301010333") {
         // For debugin in simulator fallback to native SQL Lite
         console.log("Use built in SQL Lite");
         app.db = window.openDatabase("Todo", "1.0", "Cordova Demo", 200000);
+    }
+    else {
+        app.db = window.sqlitePlugin.openDatabase("Todo");
     }
 }
       
