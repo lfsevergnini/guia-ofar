@@ -51,5 +51,6 @@
     "ID_RESOLUTION_HD720P"
   ],
   "Author": "",
-  "Description": "sample-sqlite"
+  "Description": "sample-sqlite",
+  "Framework": "Cordova"
 }
