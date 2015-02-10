@@ -1,0 +1,72 @@
+<div data-role="view" id="visualizar" data-layout="default" data-title="Visualizar empresa" class="signup-view" data-show="app.visualizarEmpresa">
+    <div data-role="header">
+    </div>
+    <div data-role="content" class="white" id="visemp_div">
+        <ul data-role="listview">
+            <li id="titulo">
+                <h2 style="margin: 5px;text-align: center; color: #1a1a1a;vertical-align: -webkit-baseline-middle;" id="visemp_name"></h2>
+            </li>
+            <li id="fones">
+                <span id="fones_phone">
+                    <span style="float: right;height: 38px;padding: 5px 10px 5px 0;vertical-align: -webkit-baseline-middle;">
+                        <a href="#" id="visemp_phonelink"><img src="images/fone.png" style="height: 100%;"></a>
+                    </span>
+                    <span id="visemp_phone" style="/*color: #E75E4A;*/padding: 10px;font-size: 1.1em;vertical-align: -webkit-baseline-middle;"></span>
+                </span>
+                <span id="fones_fax" style="display: none;">
+                    <br><br>
+                    <span style="float: right;height: 38px;padding: 5px 10px 5px 0;vertical-align: -webkit-baseline-middle;">
+                        <a href="#" id="visemp_faxlink"><img src="images/fone.png" style="height: 100%;"></a>
+                    </span>
+                    <span id="visemp_fax" style="/*color: #E75E4A;*/padding: 10px;font-size: 1.1em;vertical-align: -webkit-baseline-middle;"></span>
+                </span>
+                <span id="fones_mobile" style="display: none;">
+                    <br><br>
+                    <span style="float: right;height: 38px;padding: 5px 10px 5px 0;vertical-align: -webkit-baseline-middle;">
+                        <a href="#" id="visemp_mobilelink"><img src="images/fone.png" style="height: 100%;"></a>
+                    </span>
+                    <span id="visemp_mobile" style="/*color: #E75E4A;*/padding: 10px;font-size: 1.1em;vertical-align: -webkit-baseline-middle;"></span>
+                </span>
+            <li id="enderecos">
+                <span style="float: right;height: 35px;padding: 8px 5px 0 0;color: #E75E4A;vertical-align: -webkit-baseline-middle;" id="visemp_distance"></span>
+                <span style="color: #1a1a1a;padding: 10px; vertical-align: -webkit-baseline-middle;" id="visemp_address"></span>
+            </li>
+            <li id="email">
+                <span style="float: right;height: 40px;padding: 5px 10px 5px 0;color: #E75E4A;vertical-align: -webkit-baseline-middle;">
+                    <a id="visemp_email_link" href=""><img src="images/email.png" style="height: 100%;" /></a>
+                </span>
+                <span style=" color: #1a1a1a; padding: 10px; vertical-align: -webkit-baseline-middle;" id="visemp_email"></span>
+            </li>
+            <li id="web ">
+                <p style="color: #1a1a1a; padding: 10px; height: 65px;vertical-align: -webkit-baseline-middle;">
+                    <span id="visemp_site" style="/* height: 40px; */ /* float: left; */ ">
+                        <a href="#" onclick="abrirLink('http://ofar.com.br'); return false;">
+                            <img src="images/web.png " style="height: 100%;">
+                        </a>
+                    </span>
+                    <span id="visemp_facebook" style="/* height: 40px; vertical-align: -webkit-baseline-middle;*/ /* float: left; */ ">
+                        <a href="#" onclick="abrirLink('http://facebook.com'); return false;">
+                            <img src="images/facebook.png " style="height: 100%;">
+                        </a>
+                    </span>
+                    <span id="visemp_twitter" style="/* height: 40px; vertical-align: -webkit-baseline-middle;*/ /* float: left; */ ">
+                        <a href="#" onclick="abrirLink('http://twitter.com'); return false;">
+                            <img src="images/twitter.png " style="height: 100%;">
+                        </a>
+                    </span>
+                    <span id="visemp_googlep" style="/* height: 40px; vertical-align: -webkit-baseline-middle;*/ /* float: left; */ ">
+                        <a href="#" onclick="abrirLink('http://plus.google.com'); return false;">
+                            <img src="images/googlep.png " style="height: 100%;">
+                        </a>
+                    </span>
+                </p>
+            </li>
+            <li id="mapa">
+                <!--<span id='btn_mapa'>Ver mapa</span>-->
+            </li>
+            <li id="descricao">
+                <span id="visemp_description" style="vertical-align: -webkit-baseline-middle;"></span>
+            </li>
+        </ul>
+    </div>
+</div>
