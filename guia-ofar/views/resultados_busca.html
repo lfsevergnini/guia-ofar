@@ -1,0 +1,29 @@
+<div data-role="view" id="resultados" data-layout="default" data-title="Resultados da busca" class="signup-view" data-model="app.Busca" data-init="app.atualizarResultados(app.Busca)">
+    <div data-role="header">
+        <div id="search" style="height: 55px">
+            <form onsubmit="app.Busca.buscarResultado(); return false;">
+                <span style="float:right;" id="buscarRes" data-role="touch" data-bind="events: { tap: buscarResultado }">
+                    <a id="btn_procurar" data-role="button" class="btn btn-buscar" style="background-color: #FB5115; height: 48px; margin:5px 5px 0 0">
+                        <span>
+                            <img style="padding: 5px; vertical-align: baseline; height: 100%;" src="images/lupa.png">
+                        </span>            
+                    </a>
+                </span>
+                <input style="float:right; height:45px; margin-top: 5px" type="text" id="buscaTermoRes" placeholder="Procure por empresas, negócios, profissionais" class="input input-buscar" />
+            </form>
+            <a style="float: left; margin: 15px 0 0 15px;" data-role="button" data-rel="drawer" href="#sobre" id="menu_opcoes2" class="km-widget km-button drawer-gambiarra"><span class="km-text">
+                <img style="height: 25px; margin-bottom: 3px;" src="images/botao_opcoes.png">
+                </span>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div id="numResultados"></div>
+        <div>
+            <ul id="resultadosLista" data-role="listview">
+                
+            </ul>
+        </div>
+        <div id="semResultados"></div>
+    </div>
+</div>

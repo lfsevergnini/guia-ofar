@@ -1,0 +1,2 @@
+"Encontrado 1 Resultado - Encontrado 2 Resultados", ao invés de "encontrado(s) X registro(s)"
+Busca aparece na página de visualização da emprsa também

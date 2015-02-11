@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Guia de Negócios Ofar</title>
+    <meta charset="utf-8" />
+    <link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet" />
+    <link href="styles/style.css" rel="stylesheet" />
+    <script src="cordova.js"></script>
+    <script src="kendo/js/jquery.min.js"></script>
+    <script src="kendo/js/kendo.mobile.min.js"></script>
+    <script src="scripts/app/definitions.js" type="text/javascript"></script>
+    <script src="scripts/app/util.js" type="text/javascript"></script>
+    <script src="scripts/app/banco_config.js" type="text/javascript"></script>
+    <script src="scripts/app/app.js" type="text/javascript"></script>
+    <script src="scripts/app/resultados.js" type="text/javascript"></script>
+    <script src="scripts/app/busca.js" type="text/javascript"></script>
+    <script src="scripts/app/visualizar_empresa.js" type="text/javascript"></script>
+    <!--<link href="styles/main.css" rel="stylesheet" />-->
+</head>
+
+<body id="guiaApp">
+    <div data-role="view" id="welcome" data-layout="default" class="welcome-scrn form-view" data-model="app.Busca" data-init="app.Busca.init" data-show="app.Busca.show">
+        <div data-role="header">
+            <div id="header">
+                <div id="logo-busca">
+                    <span style="text-align: center; box-shadow: 0px 1px 3px #000;" class="logo">
+                        <img style="height: 100%; vertical-align: bottom;" src="images/logo.png">
+                    </span>
+                    <span style="float: right; margin-top: -55px; height: 55px;" class="titulo-busca" id="mostrarBusca">
+                        <img style="padding: 15px; vertical-align: baseline; height: 100%;" src="images/lupa.png">
+                    </span>
+                </div>
+                <div id="search" style="display:none; height: 55px">
+                    <form onsubmit="app.Busca.buscar(); return false;">
+                        <span style="float:right;" id="buscar" data-role="touch" data-bind="events: { tap: buscar }">
+                            <a id="btn_procurar" data-role="button" class="btn btn-buscar" style="background-color: #FB5115; height: 48px; margin:5px 5px 0 0">
+                                <span>
+                                    <img style="padding: 5px; vertical-align: baseline; height: 100%;" src="images/lupa.png">
+                                </span>            
+                            </a>
+                        </span>
+                        <input style="float:right; height:45px; margin-top: 5px" type="text" id="buscaTermo" placeholder="Procure por empresas, negócios, profissionais" class="input input-buscar" />
+                    </form>
+                </div>
+            </div>
+            <a style="float: left; margin: -40px 0 0 15px;" data-role="button" data-rel="drawer" href="#sobre" id="menu_opcoes" class="km-widget km-button drawer-gambiarra"><span class="km-text">
+                <img style="height: 25px; margin-bottom: 3px;" src="images/botao_opcoes.png">
+                </span>
+            </a>
+        </div>
+        <div data-role="content" class="content" id="categorias_lista">
+            <ul id="buscaCategorias">
+            </ul>
+        </div>
+    </div>
+    <div data-role="drawer" id="sobre" class="ice" data-hide="esconderLightbox" data-show="exibirLightbox">
+        <div data-role="header" style="background-color: #FB5115; width: 100%; text-align: center">
+            <img src="images/logo.png" style="margin: 10px; width: 90%" />
+        </div>
+        <div data-role="content" class="ice">
+            <ul data-role="listview">
+                <li style="border-top: 1px solid #e3e3e3;">
+
+                    <img src="images/gotoweb.png" alt="Visitar o site do Guia Ofar" class="ic_lista-menu" />
+                    <span>
+                        <a href="#" alt="Clique para acessar www.ofar.com.br" onclick="abrirLink('http://ofar.com.br'); return false;">Ofar.com.br</a>
+                    </span>
+                </li>
+                <li>
+                    <img src="images/about.png" alt="Sobre o guia" class="ic_lista-menu" />
+                    <span>Sobre o guia</span>
+                </li>
+                <li>
+                    <img src="images/error.png" alt="Informar um erro no Guia Ofar" class="ic_lista-menu" />
+                    <span>Informar um erro</span>
+                </li>
+            </ul>
+        </div>
+        <div data-role="footer" class="ice">
+            <ul data-role="listview">
+
+                <li style="border-top: 1px solid #e3e3e3; text-align:left">
+                    <img src="images/exit.png" alt="Sair do aplicativo" class="ic_lista-menu" />
+                    <span>
+                        <a href="#" alt="Clique para sair do aplicativo" onclick="app.helper.exitApp(); return false;">Sair</a>
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="black_overlay"></div>
+</body>
+<script type="text/javascript"
+  src="http://maps.googleapis.com/maps/api/js?libraries=geometry">
+</script>
+<script src="scripts/app/distancias.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Rodapé desaparece quando busca está em foco
+        $("#buscaTermo").focus(function () {
+           $("#app_footer").hide();
+        }).blur(function () {
+           $("#app_footer").show();
+        });
+        
+        // Exibe e esconde a busca, conforme funcionamento da interface
+        $("#mostrarBusca").click(function() {
+            $("#search").fadeIn();
+            $("#logo-busca").hide();
+            $("#buscaTermo").focus();
+        });
+        
+        $("#buscaTermo").blur(function () {
+            if ($(this).val() == '')
+            {
+                $("#logo-busca").fadeIn();
+                $("#search").hide();
+            }
+        });
+    });
+    
+    // Exibir a caixa que esconde o conteúdo
+    $("#black_overlay").kendoTouch({ 
+        enableSwipe: true, 
+        swipe: function (e) {
+            if (e.direction == "left")
+                $("#black_overlay").click();
+        } 
+    });
+    $("#black_overlay").click(function () {
+        $(this).hide();
+        $("#sobre").data("kendoMobileDrawer").hide();
+    });
+    function exibirLightbox() {
+        $("#sobre").css({"z-index": 1002});
+        $("#black_overlay").show();
+    }
+    function esconderLightbox() {
+        $("#sobre").css({"z-index": "auto"});
+        $("#black_overlay").hide();
+    }
+</script>
+</html>
