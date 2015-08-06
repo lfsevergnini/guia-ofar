@@ -7,7 +7,7 @@
   "Author": "Luís Filipe Severgnini",
   "Description": "Guia de Negócios Ofar",
   "BundleVersion": "1.1",
-  "AndroidVersionCode": "1",
+  "AndroidVersionCode": "2",
   "iOSDeviceFamily": [
     "1",
     "2"
