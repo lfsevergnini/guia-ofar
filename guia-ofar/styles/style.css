@@ -1,12 +1,16 @@
+
+
 #guiaApp.km-flat,
 #guiaApp.km-flat .km-navbar,
 #guiaApp.km-flat .km-content {
     border: 0 none;
-	background-color: white;
-	color: #1a1a1a;
-    font-family: "Roboto", "Droid Sans",sans-serif;
+	background-color: #eee;
+	color: #FFF;
+    font-family: "calibri", "Roboto", "Droid Sans",sans-serif;
+    /*background-image: url(../images/fibra.jpg);*/
 }
 #guiaApp.km-flat .km-footer {
+    //height: 7.5%;
     text-align: center;
 }
 
@@ -51,11 +55,14 @@ input[type="text"] {
 }
 
 /* Buscar */
-#search {
+#search,
+#searchRes,
+#searchVis{
     text-align: center;
     vertical-align: middle;
     background-color: #FB5115;
     box-shadow: 0px 1px 3px #000;
+    /*background-image: url(../images/fundo.jpg);*/
 }
 
 .btn-buscar {
@@ -71,21 +78,30 @@ input[type="text"] {
     margin: 0;
     padding: 0;
     list-style: none;
+    /*background-image: url(../images/fibra.jpg);*/
+    background-color: #EEE;
+    /*padding-bottom: 88px;*/
 }
 
 #categorias_lista ul li {
-    line-height: 2.5em;
-    padding-left: 20px;
+    line-height: 3.4em;
+    padding-left: 16px;
+    margin: 0 10px;
     overflow: hidden;
-    border-bottom: 1px solid #f4f4f4;
+    color: #252525;
+    border-top: 2px solid #ddd;
+    border-bottom: 1px solid #777;
+}
+#categorias_lista ul li:last-child {
+    /*border-bottom: none;*/
 }
 
 @media screen and (min-width: 450px)  and (max-width: 700px) 
  {
     #categorias_lista ul li {
         display: inline-block;
-        width: 50%;
-        border-left: 1px solid #f4f4f4;
+        width: 46%;
+        border-left: 1px solid #888;
     }
     
     #categorias_lista ul a:nth-child(odd) li
@@ -98,8 +114,8 @@ input[type="text"] {
  {
     #categorias_lista ul li {
         display: inline-block;
-        width: 33%;
-        border-left: 1px solid #f4f4f4;
+        width: 30%;
+        border-left: 1px solid #888;
     }
 }
 
@@ -129,12 +145,13 @@ input[type="text"] {
 /* Resultados */
 #numResultados {
     /*background-color: #FDAD81;*/
-    background-color: #1a1a1a;
+    background-color: #434343;
     color: #fcfcfc;
 }
 
 #numResultados {
-    background-color: #666;
+    /*background-color: #333;*/
+    background-color: #919091;
     color: #FFF;
     padding: 10px 0;
     text-align: center;
@@ -158,6 +175,9 @@ input[type="text"] {
 
 .result-nome {
     color: #1a1a1a;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: -20px;
 }
 
 .result-end {
@@ -191,7 +211,7 @@ input[type="text"] {
 }
 
 #guiaApp.km-flat .white{
-    background-color: white;
+    background-color: #EEE;
     color:#1a1a1a;
 }
 
@@ -214,5 +234,116 @@ input[type="text"] {
 @media screen and (min-width: 1080px){.input-buscar {width: 92%;}}
 
 .mapa-view {
-    width: 100%;
+    width: 95%;
+}
+
+.km-flat .km-list>li {
+    /*background-image: url(../images/fibra.jpg);*/
+    background-color:#EEE;
+    color: #252525;
+    border-top: 2px solid #ddd;
+    -webkit-box-shadow: none;
+    border-bottom: 1px solid #777;
+    padding-left: 5px;
+    margin: 0 7px;
+}
+
+.result-nome, .result-end {
+    color: #252525;
+}
+
+.km-root a {
+    color: #252525;
+    
+}
+.km-flat .km-group-title {
+    background-color: transparent;
+    border: 2px solid #ddd;
+    border-width: 1px 0;
+    height: 0px;
+    border-bottom: #777 1px solid;
+    padding: 0px;
+    margin-bottom: 7px;
+    margin-top: 3px
+}
+
+textarea {
+    resize: none;
+    padding-left: 0px;
+}
+
+.km-flat .km-button {
+padding: .7em 1.8em;
+background: rgba(200,200,200,0.8);
+border: 1px solid rgba(0,0,0,0.1);
+border-radius: 3px;
+-moz-border-radius: 3px;
+-webkit-border-radius: 3px;
+}
+
+.km-flat .km-button:hover {
+background: rgba(220,220,220,0.88);
+}
+
+.km-flat .km-list input[type=password], .km-flat .km-list input[type=search], .km-flat .km-list input[type=number], .km-flat .km-list input[type=tel], .km-flat .km-list input[type=url], .km-flat .km-list input[type=email], .km-flat .km-list input[type=month], .km-flat .km-list input[type=color], .km-flat .km-list input[type=week], .km-flat .km-list input[type=date], .km-flat .km-list input[type=time], .km-flat .km-list input[type=datetime], .km-flat .km-list input[type=datetime-local], .km-flat .km-list input[type=text]:not(.k-input), .km-flat .km-list select:not([multiple]), .km-flat .km-list .k-dropdown-wrap, .km-flat .km-list textarea {
+appearance: none;
+-moz-appearance: none;
+-webkit-appearance: none;
+color: #4c5356;
+min-width: 6em;
+border: 0;
+padding: .4em;
+outline: 0;
+background: transparent;
+font-weight: normal;
+font-family: calibri;
+}
+
+a#btn_procurar {
+padding: 2px 4px;
+}
+
+#guiaApp.km-flat .ice {
+    background-color: transparent;
+    color: #1a1a1a;
+    /*background-image: url(../images/fibra.jpg);*/
+    background-color:#EEE;
+}
+
+#header span.logo {
+    /*background-image: url(../images/fundo.jpg);*/
+}
+textarea#form_mensagem {
+margin-left: 0px;
+padding-left: 0px;
+}
+
+
+#first_access {
+    height: 100%;
+    vertical-align: center;
+    left: 10%;
+    text-align: center;
+    display: block;
+    position: fixed;
+    width: 80%;
+    padding-top: 50%;
+    color: #252525;
+}
+
+
+
+span.result-nome {
+    display: block;
+    margin: 10px 0 -25px;
+}
+
+span.result-end {
+    display: inline-block;
+    width: 164px;
+    margin-top: 5px;
+}
+
+ul#resultadosLista {
+    padding-bottom: 8px;
 }

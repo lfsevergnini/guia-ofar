@@ -2,6 +2,37 @@ function isArray(myArray) {
     return myArray.constructor.toString().indexOf("Array") > -1;
 }
 
+function IsEmail(email) {
+  var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+  return regex.test(email);
+}
+
+/* "Expande"/Exibe os filhos de um nodo */
+function expandirFilhos(id)
+{
+    $(id).find("span").find("img").attr("src", "images/minus.png");
+    if ($(id).find("ul").css("display") == "none") {
+        $(id).find("ul").show();
+        $(id).css("width", "100%");
+    } else {
+        $(id).find("span").find("img").attr("src", "images/plus.png");
+        $(id).find("ul").hide();
+        $(id).css("width", ""); // Reseta a largura da categoria
+    }
+}
+
+function encontrarCategoriaNoVetor(vetor, chave) {
+    for (var i = 0; i < vetor.length; i++)
+    {
+        if (vetor[i].name == chave)
+        {
+            return i;
+        }
+    }
+    
+    return false;
+}
+
 function removerAcentos(newStringComAcento) {
     var str = newStringComAcento;
     
@@ -26,7 +57,7 @@ function removerAcentos(newStringComAcento) {
 
 function dataMySQL(data) {
 	var timestamp = JSON.stringify(data);
-	return timestamp.replace(/T/g, ' ').substring(0, 20);
+	return timestamp.replace(/T/g, ' ').substring(1, 20);
 }
 
 /*

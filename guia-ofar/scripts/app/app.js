@@ -40,6 +40,15 @@ var app = (function (win) {
                 $(document.body).height(window.innerHeight);
             }, 10);
         }
+        
+        // Ajusta o "carregando" para o centro da página
+        if (window.innerHeight > window.innerWidth) {
+            $("#first_access").css("padding-top", "50%");
+            //$("#app_footer").css("height", "5%");
+        } else{
+            $("#first_access").css("padding-top", "20%");
+            //$("#app_footer").css("height", "7.5%");
+        }
     };
 
     // Handle device back button tap
@@ -47,9 +56,15 @@ var app = (function (win) {
         e.preventDefault();
 
         // Verifica se o usuário deseja sair da aplicação
-        if (window.location.href == INDEX) {            
+        if (window.location.href == INDEX) {
             AppHelper.exitApp();
         } else {
+            // Reseta os banners
+            if (app.helper.internetDisponivel()) 
+            {
+                exibirBanner();
+            }
+            
             history.back();
         }
     };
@@ -70,6 +85,10 @@ var app = (function (win) {
         
         // Realiza algumas mudanças de última hora na interface
 		$("#menu_opcoes").removeClass("km-button");
+        
+        // Carrega o banner
+        if (app.helper.internetDisponivel())
+            exibirBanner();
     };
 
     // Handle "deviceready" event

@@ -12,8 +12,8 @@ app.atualizarResultados = function(busca) {
 	var renderEmpresa = function (row) {        
         var empresa  = "<li value='" + row.id + "' id='li_result_" + row.id + "' onclick=\"ID_EMPRESA = " + row.id + "; app.mobileApp.navigate('views/visualizar_empresa.html', 'fade');\">";
             empresa += "<span style='float:right;'><a class='result-link' href='tel:" + row.phone.replace(/ /g, '') + "'>";
-            empresa += "<img src='images/fone.png' style='margin-top: 5px; height: 35px'/></a></span>";
-            empresa += "<img class='blank' src='images/blank.jpg' style=\"height: 45px; width:  45px; float: left; margin: 7px\"' /><span class='result-nome'>" + row.name + "</span><br/>";
+            empresa += "<img src='images/phone.png' style='margin-top: 12px; height: 35px'/></a></span>";
+            empresa += "<img class='blank' src='images/no.png' style=\"float: left; margin: 7px 10px 7px 0px; width:75px; height: 50px;\" /><span class='result-nome'>" + row.name + "</span><br/>";
             empresa += "<span class='result-end'>" + row.address + "</span></li>";
         
         // Troca a imagem da empresa, se houver uma personalizada
@@ -42,7 +42,7 @@ app.atualizarResultados = function(busca) {
         } else 
         {
             // Caso contrário, exibe uma mensagem que diz "não há resultados"
-            var rowOutput = "<p>Não há resultados para os termos informados.</p>";
+            var rowOutput = "";
             
             // Adiciona a mensagem à DIV            
             naoResultados.innerHTML = rowOutput;
@@ -73,10 +73,12 @@ app.atualizarResultados = function(busca) {
             sql += busca.getWhere();
             sql += " GROUP BY empresas.id";
             sql += " ORDER BY empresas.package_id DESC, empresas.name ASC";
-        
+        console.log(sql);
         // Executa a consulta
-		tx.executeSql(sql, [], 
-					  render, 
-					  app.onError);
+		try {
+            tx.executeSql(sql, [], 
+                          render, 
+                          app.onError);
+        } catch(err){}
 	});
 }

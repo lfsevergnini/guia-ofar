@@ -1,6 +1,6 @@
 var DistanceMatrix = null;
 
-if (google != null && google != undefined)
+if (google != null && google != undefined && google.maps != null && google.maps != undefined)
     DistanceMatrix = new google.maps.DistanceMatrixService();
 
 /* Função que realiza a query para obter a distância entre os locais */

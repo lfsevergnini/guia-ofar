@@ -1,44 +1,71 @@
-<div data-role="view" id="visualizar" data-layout="default" data-title="Visualizar empresa" class="signup-view" data-show="app.visualizarEmpresa">
+<div data-role="view" id="visualizar" data-layout="default" data-title="Visualizar empresa" class="signup-view" data-show="app.visualizarEmpresa" data-model="app.Busca">
     <div data-role="header">
+        <div id="header">
+            <div id="logo-buscaVis">
+                <span style="text-align: center; box-shadow: 0px 1px 3px #000;" class="logo">
+                    <img id="logo_voltar_vis" style="height: 38px;margin-top: 10px; vertical-align: bottom;" src="images/logo.png">
+                </span>
+                <span style="float: right; margin-top: -55px; border: none;" class="titulo-busca" id="mostrarBuscaVis" onclick="exibirBuscaVis()">
+                    <img style="padding: 15px; vertical-align: baseline; margin-top: -8px; padding-bottom: 0px;" src="images/lupa.png">
+                </span>
+            </div>
+            <div id="searchVis" style="display:none; height: 55px">
+                <form onsubmit="app.Busca.buscar('#buscaTermoVis'); return false;">
+                    <span style="float:right;" id="buscarVis" data-role="touch" data-bind="events: { tap: buscar }">
+                        <a id="btn_procurar" data-role="button" class="btn btn-buscar" style="background-color: #FB5115; height: 48px; margin:5px 5px 0 0">
+                            <span>
+                                <img style="padding: 5px; vertical-align: baseline; height: 100%;" src="images/lupa.png">
+                            </span>            
+                        </a>
+                    </span>
+                    <input style="float:right; height:45px; margin-top: 5px" type="text" id="buscaTermoVis" placeholder="Procure por empresas, negócios, profissionais" class="input input-buscar" 
+                           onblur="esconderBuscaVis($(this))"/>
+                </form>
+            </div>
+        </div>
+        <a style="float: left; margin: -40px 0 0 15px;" data-role="button" data-rel="drawer" href="#sobre" id="menu_opcoes3" class="km-widget km-button drawer-gambiarra"><span class="km-text">
+            <img style="height: 25px; margin-bottom: 3px;" src="images/botao_opcoes.png">
+            </span>
+        </a>
     </div>
     <div data-role="content" class="white" id="visemp_div">
         <ul data-role="listview">
             <li id="titulo">
-                <h2 style="margin: 5px;text-align: center; color: #1a1a1a;vertical-align: -webkit-baseline-middle;" id="visemp_name"></h2>
+                <h2 style="margin: 5px;text-align: center;vertical-align: -webkit-baseline-middle;" id="visemp_name"></h2>
             </li>
             <li id="fones">
                 <span id="fones_phone">
                     <span style="float: right;height: 38px;padding: 5px 10px 5px 0;vertical-align: -webkit-baseline-middle;">
-                        <a href="#" id="visemp_phonelink"><img src="images/fone.png" style="height: 100%;"></a>
+                        <a href="#" id="visemp_phonelink"><img src="images/phone.png" style="height: 100%;"></a>
                     </span>
                     <span id="visemp_phone" style="/*color: #E75E4A;*/padding: 10px;font-size: 1.1em;vertical-align: -webkit-baseline-middle;"></span>
                 </span>
                 <span id="fones_fax" style="display: none;">
                     <br><br>
                     <span style="float: right;height: 38px;padding: 5px 10px 5px 0;vertical-align: -webkit-baseline-middle;">
-                        <a href="#" id="visemp_faxlink"><img src="images/fone.png" style="height: 100%;"></a>
+                        <a href="#" id="visemp_faxlink"><img src="images/phone.png" style="height: 100%;"></a>
                     </span>
                     <span id="visemp_fax" style="/*color: #E75E4A;*/padding: 10px;font-size: 1.1em;vertical-align: -webkit-baseline-middle;"></span>
                 </span>
                 <span id="fones_mobile" style="display: none;">
                     <br><br>
                     <span style="float: right;height: 38px;padding: 5px 10px 5px 0;vertical-align: -webkit-baseline-middle;">
-                        <a href="#" id="visemp_mobilelink"><img src="images/fone.png" style="height: 100%;"></a>
+                        <a href="#" id="visemp_mobilelink"><img src="images/phone.png" style="height: 100%;"></a>
                     </span>
                     <span id="visemp_mobile" style="/*color: #E75E4A;*/padding: 10px;font-size: 1.1em;vertical-align: -webkit-baseline-middle;"></span>
                 </span>
             <li id="enderecos">
                 <span style="float: right;height: 35px;padding: 8px 5px 0 0;color: #E75E4A;vertical-align: -webkit-baseline-middle;" id="visemp_distance"></span>
-                <span style="color: #1a1a1a;padding: 10px; vertical-align: -webkit-baseline-middle;" id="visemp_address"></span>
+                <span style="padding: 10px; vertical-align: -webkit-baseline-middle;" id="visemp_address"></span>
             </li>
             <li id="email">
                 <span style="float: right;height: 40px;padding: 5px 10px 5px 0;color: #E75E4A;vertical-align: -webkit-baseline-middle;">
                     <a id="visemp_email_link" href=""><img src="images/email.png" style="height: 100%;" /></a>
                 </span>
-                <span style=" color: #1a1a1a; padding: 10px; vertical-align: -webkit-baseline-middle;" id="visemp_email"></span>
+                <span style="padding: 10px; vertical-align: -webkit-baseline-middle;" id="visemp_email"></span>
             </li>
-            <li id="web ">
-                <p style="color: #1a1a1a; padding: 10px; height: 65px;vertical-align: -webkit-baseline-middle;">
+            <li id="web">                
+                <p style="padding: 10px; height: 65px;vertical-align: -webkit-baseline-middle; margin:0">
                     <span id="visemp_site" style="/* height: 40px; */ /* float: left; */ ">
                         <a href="#" onclick="abrirLink('http://ofar.com.br'); return false;">
                             <img src="images/web.png " style="height: 100%;">
@@ -61,12 +88,41 @@
                     </span>
                 </p>
             </li>
-            <li id="mapa">
+            <li id="mapa" style="text-align:center">
                 <!--<span id='btn_mapa'>Ver mapa</span>-->
             </li>
+            <li id="emp_img"></li>
             <li id="descricao">
                 <span id="visemp_description" style="vertical-align: -webkit-baseline-middle;"></span>
             </li>
         </ul>
     </div>
+    <div data-role="footer" id="app_footer3">
+        <!--<span>&copy; <span data-bind="text: getYear"></span> Ofar</span>-->
+        <a href="javascript:void(0)">
+            <img id="footer_banner3" style="/*height: 90%;*/ width: 100%" />
+        </a>
+    </div>
+    <script>
+        function exibirBuscaVis() {
+            $("#searchVis").fadeIn();
+            $("#logo-buscaVis").hide();
+            $("#buscaTermoVis").focus();
+            $("#app_footer3").hide();
+        }
+        
+        function esconderBuscaVis(id) {
+            //if ($(id).val() == '')
+            //{
+                $("#logo-buscaVis").fadeIn();
+                $("#searchVis").hide();
+            //}
+            $("#app_footer3").show();
+        }
+        
+        $("#logo_voltar_vis").click(function () {
+            // LOGO - Voltar para a página inicial
+            app.mobileApp.navigate("#welcome");
+        });
+    </script>
 </div>

@@ -11,76 +11,126 @@
     <script src="scripts/app/definitions.js" type="text/javascript"></script>
     <script src="scripts/app/util.js" type="text/javascript"></script>
     <script src="scripts/app/banco_config.js" type="text/javascript"></script>
+    <script src="scripts/app/banners.js" type="text/javascript"></script>
     <script src="scripts/app/app.js" type="text/javascript"></script>
     <script src="scripts/app/resultados.js" type="text/javascript"></script>
     <script src="scripts/app/busca.js" type="text/javascript"></script>
     <script src="scripts/app/visualizar_empresa.js" type="text/javascript"></script>
+    <script src="scripts/app/formulario.js" type="text/javascript"></script>
     <!--<link href="styles/main.css" rel="stylesheet" />-->
 </head>
 
 <body id="guiaApp">
     <div data-role="view" id="welcome" data-layout="default" class="welcome-scrn form-view" data-model="app.Busca" data-init="app.Busca.init" data-show="app.Busca.show">
         <div data-role="header">
-            <div id="header">
+            <div id="header" style="display:none">
                 <div id="logo-busca">
                     <span style="text-align: center; box-shadow: 0px 1px 3px #000;" class="logo">
-                        <img style="height: 100%; vertical-align: bottom;" src="images/logo.png">
+                        <img style="height: 38px;margin-top: 10px; vertical-align: bottom;" src="images/logo.png">
                     </span>
-                    <span style="float: right; margin-top: -55px; height: 55px;" class="titulo-busca" id="mostrarBusca">
-                        <img style="padding: 15px; vertical-align: baseline; height: 100%;" src="images/lupa.png">
+                    <span style="float: right; margin-top: -55px; border: none;" class="titulo-busca" id="mostrarBusca">
+                        <img style="padding: 15px; vertical-align: baseline; margin-top: -8px; padding-bottom: 0px;" src="images/lupa.png">
                     </span>
                 </div>
                 <div id="search" style="display:none; height: 55px">
-                    <form onsubmit="app.Busca.buscar(); return false;">
+                    <form onsubmit="app.Busca.buscar('#buscaTermo'); return false;">
                         <span style="float:right;" id="buscar" data-role="touch" data-bind="events: { tap: buscar }">
-                            <a id="btn_procurar" data-role="button" class="btn btn-buscar" style="background-color: #FB5115; height: 48px; margin:5px 5px 0 0">
+                            <a id="btn_procurar" data-role="button" class="btn btn-buscar" style="background-color: #FB5115; border: none; height: 48px; margin:5px 5px 0 0">
                                 <span>
-                                    <img style="padding: 5px; vertical-align: baseline; height: 100%;" src="images/lupa.png">
+                                    <img style="padding: 5px; vertical-align: baseline; margin-top: -8px; padding-bottom: 0px;" src="images/lupa.png">
                                 </span>            
                             </a>
                         </span>
-                        <input style="float:right; height:45px; margin-top: 5px" type="text" id="buscaTermo" placeholder="Procure por empresas, negócios, profissionais" class="input input-buscar" />
+                        <input style="float: right; height: 45px; margin-top: 5px; border-radius: 0px; border: none;" type="text" id="buscaTermo" placeholder="Procure por empresas, negócios, profissionais" class="input input-buscar" />
                     </form>
                 </div>
             </div>
             <a style="float: left; margin: -40px 0 0 15px;" data-role="button" data-rel="drawer" href="#sobre" id="menu_opcoes" class="km-widget km-button drawer-gambiarra"><span class="km-text">
-                <img style="height: 25px; margin-bottom: 3px;" src="images/botao_opcoes.png">
+                <img style="height: 32px; margin-bottom: 3px;" src="images/botao_opcoes.png">
                 </span>
             </a>
         </div>
-        <div data-role="content" class="content" id="categorias_lista">
-            <ul id="buscaCategorias">
-            </ul>
+        <div id="normal_access" style="display:none">
+            
+            <div class="content" id="categorias_lista">
+                <ul id="buscaCategorias">                    
+                </ul>
+            </div>
+            
+        </div>
+        <!-- A VIew abaixo é utilizada no primeiro acesso -->
+        
+        <div id="first_access" data-layout="default">
+            <img style="margin: -100px 0 10px; vertical-align: bottom;" src="images/logogray.png"><br />
+            Olá! Seja bem-vindo ao Guia OFAR!<br/><br/>
+            Estamos preparando tudo para que o guia funcione da melhor forma possível! Isso pode levar alguns instantes... 
+            <br /><img src="images/loading.gif" style="margin-top: 16px; height: 34px">
+        </div>
+        <div data-role="footer" id="app_footer">
+            <!--<span>&copy; <span data-bind="text: getYear"></span> Ofar</span>-->
+            <a href="javascript:void(0)">
+                <img id="footer_banner" style="/*height: 90%;*/ width: 100%" />
+            </a>
         </div>
     </div>
     <div data-role="drawer" id="sobre" class="ice" data-hide="esconderLightbox" data-show="exibirLightbox">
         <div data-role="header" style="background-color: #FB5115; width: 100%; text-align: center">
-            <img src="images/logo.png" style="margin: 10px; width: 90%" />
+           <img src="images/logo1.jpg" />
         </div>
         <div data-role="content" class="ice">
-            <ul data-role="listview">
-                <li style="border-top: 1px solid #e3e3e3;">
-
-                    <img src="images/gotoweb.png" alt="Visitar o site do Guia Ofar" class="ic_lista-menu" />
+            <ul data-role="listview" data-type="group">
+                <li>
+                    <img src="images/home.png" alt="Página inicial" style="vertical-align: middle; margin-left: 4px; height: 29px; margin-right: 3px;" class="60pxic_lista-menu" />
                     <span>
-                        <a href="#" alt="Clique para acessar www.ofar.com.br" onclick="abrirLink('http://ofar.com.br'); return false;">Ofar.com.br</a>
+                        <a href="javascript:void(0)" alt="Clique para voltar para a página inicial" onclick="app.mobileApp.navigate('#welcome'); return false;">Início</a>
                     </span>
                 </li>
                 <li>
-                    <img src="images/about.png" alt="Sobre o guia" class="ic_lista-menu" />
-                    <span>Sobre o guia</span>
+                    <img src="images/gotoweb.png" alt="Visitar o site do Guia Ofar" style="vertical-align: middle; margin-left: 4px;" class="60pxic_lista-menu" />
+                    <span>
+                        <a href="javascript:void(0)" alt="Clique para acessar www.ofar.com.br" onclick="abrirLink('http://ofar.com.br'); return false;">Ofar.com.br</a>
+                    </span>
                 </li>
                 <li>
-                    <img src="images/error.png" alt="Informar um erro no Guia Ofar" class="ic_lista-menu" />
-                    <span>Informar um erro</span>
+                    <img src="images/anuncie.png" alt="Anuncie aqui!" style="vertical-align: middle;margin-left: 4px;height: 29px;margin-right: 3px;" class="60pxic_lista-menu" />
+                    <span>
+                        <a href="javascript:void(0)" alt="Anuncie no Guia de Negócios OFAR" onclick="abrirLink('http://http://guia.ofar.com.br/anuncie'); return false;">Anuncie</a>
+                    </span>
+                </li>
+                <li>
+                    <img src="images/about.png" style="margin-left: 4px;"  alt="Sobre o guia" class="ic_lista-menu" />
+                    <span><a href="javascript:void(0)" id="menu_lateral_sobre">Sobre o guia</a></span>
+                </li>
+                <li>
+                    <img src="images/error.png" alt="Informar um erro" style="vertical-align: middle;margin-left: 7px;height: 25px;margin-right: 3px;" class="60pxic_lista-menu" />
+                    <span>
+                        <a href="javascript:void(0)" alt="Informar um erro no guia" onclick="abrirLink('http://http://guia.ofar.com.br/informar_erro'); return false;">Informar um erro</a>
+                    </span>
+                </li>
+                <li>
+                    <img src="images/msg.png" style="margin-left: 4px;" alt="Deixe-nos sua mensagem" class="ic_lista-menu" />
+                    <span><a href="javascript:void(0)" id="menu_lateral_contato" data-transition="none">Deixe-nos sua mensagem</a></span>
+                    <ul id="form_contato" style="display:none">
+                        <li style="padding: 25px">
+                            <input style="width: 100%; height:45px; margin-top: -22px; padding-left:16px" type="text" id="form_nome" placeholder="Qual é o seu nome?" class="input input-buscar" />
+                        </li>
+                        <li style="padding: 25px">
+                            <input style="width: 100%; height:45px; margin-top: -22px; padding-left:16px" type="email" id="form_email" placeholder="Email" class="input input-buscar" />
+                        </li>
+                        <li>
+                            <textarea style="width: 100%; height:100%; margin:0" id="form_mensagem" placeholder="Sua mensagem"></textarea>
+                        </li>
+                        <li style="text-align:center">
+                            <button id="enviar_contato" class="km-button">Enviar</button>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
-        <div data-role="footer" class="ice">
+        <div data-role="footer" class="ice" id="footer_sair">
             <ul data-role="listview">
-
                 <li style="border-top: 1px solid #e3e3e3; text-align:left">
-                    <img src="images/exit.png" alt="Sair do aplicativo" class="ic_lista-menu" />
+                    <img src="images/exit.png"  style="margin: 0 0 7px -10px;" alt="Sair do aplicativo" class="ic_lista-menu" />
                     <span>
                         <a href="#" alt="Clique para sair do aplicativo" onclick="app.helper.exitApp(); return false;">Sair</a>
                     </span>
@@ -96,6 +146,15 @@
 <script src="scripts/app/distancias.js" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        // Ajusta o "carregando" para o centro da página
+        if (window.innerHeight > window.innerWidth) {
+            $("#first_access").css("padding-top", "50%");
+            //$("#app_footer").css("height", "5%");
+        } else{
+            $("#first_access").css("padding-top", "20%");
+            //$("#app_footer").css("height", "7.5%");
+        }
+        
         // Rodapé desaparece quando busca está em foco
         $("#buscaTermo").focus(function () {
            $("#app_footer").hide();
@@ -108,14 +167,34 @@
             $("#search").fadeIn();
             $("#logo-busca").hide();
             $("#buscaTermo").focus();
-        });
-        
+        });        
         $("#buscaTermo").blur(function () {
             if ($(this).val() == '')
             {
                 $("#logo-busca").fadeIn();
                 $("#search").hide();
             }
+        });
+        
+        // Menu Lateral - Lógica do formulário de contato
+        $("#menu_lateral_contato").click(function () {
+            if ($("#form_contato").css("display") == "none")
+                $("#form_contato").fadeIn();
+            else
+                $("#form_contato").fadeOut();
+        });
+        $("#enviar_contato").click(function () {
+            if (app.helper.internetDisponivel() && validarFormulario($("#form_contato")))
+                enviarEmail();
+        });
+        $("#form_mensagem,#form_email,#form_nome").focus(function () {$("#footer_sair").hide();});
+        $("#form_mensagem,#form_email,#form_nome").blur(function () {$("#footer_sair").show();});
+        
+        // Menu Lateral - Sobre
+        $("#menu_lateral_sobre").click(function () {
+            abrirLink('http://http://guia.ofar.com.br/sobre_o_guia'); 
+            return false;
+            //app.showAlert("Guia de Negócios OFAR® " + app.getYear +"\nTodos os direitos reservados.\n\nDesenvolvido por WebNinjas", null, "Sobre o Guia OFAR");
         });
     });
     
@@ -128,7 +207,6 @@
         } 
     });
     $("#black_overlay").click(function () {
-        $(this).hide();
         $("#sobre").data("kendoMobileDrawer").hide();
     });
     function exibirLightbox() {

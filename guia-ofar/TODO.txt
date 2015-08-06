@@ -1,2 +1,21 @@
-"Encontrado 1 Resultado - Encontrado 2 Resultados", ao invés de "encontrado(s) X registro(s)"
-Busca aparece na página de visualização da emprsa também
+<Como estamos num geral??>
+
+- Ajeitar as categorias conforme pais/filhos/etc
+- Menu/Contato faz scroll pra baixo quando aparece, para que os campos sejam visíveis ao usuário, mesmo quando a tela for 
+pequena/estiver deitada
+- Atualizar categorias x empresas [POR HORA, NÃO É NECESSÁRIO]
+- Realizar interações com a WEB apenas quando houver acesso com a internet
+
+
+THIAGO:
+<FEITO> - Tela "carregando" quando for o primeiro acesso (deixa ela bonitona, centralizada e pá! haha)
+<FEITO> - Splashscreen pra Android (que vai ser a primeira plataforma a ser lançada, as outras a gente vai lançando com o tempo)
+
+<FEITO> - O cliente solicitou que voltássemos ao esquema de cores branco ou escolhessemos uma cor mais clara. :/
+
+<COMO FICOU ISSO??> Acho que não é tão importante: um alert pode ser o suficiente, a não ser que o cliente reclame
+- Mensagem de "erro" do formulário de contato (as mensagens eu posso fazer, tu pode arrumar com teu raio bonitizador hahaha),
+mesmo esquema da "carregando": 
+    - Uma pra quando o cara não tiver internet (algo tipo: "Desculpe, mas você precisa estar conectado para enviar esta mensagem...")
+    - Uma pra quando enviar com sucesso (algo tipo: "Obrigado! A sua mensagem nos ajuda a melhor o nosso trabalho! blablalbla do cão haha)
+    - Uma para quando faltar campos? (tipo: "Seu burro, como vou te responder se eu não tenho teu contato! :D)"  

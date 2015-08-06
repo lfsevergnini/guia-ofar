@@ -22,6 +22,7 @@ app.visualizarEmpresa = function() {
         var twitter = document.getElementById("visemp_twitter");
         var googlep = document.getElementById("visemp_googlep");
         var mapa = document.getElementById("mapa");
+        var emp_img = document.getElementById("emp_img");
         
         // Insere os dados na interface        
         distance.innerHTML = "&nbsp;";
@@ -75,40 +76,40 @@ app.visualizarEmpresa = function() {
             $(site.parentNode.parentNode).css("display", "none");
         } else
         {
-            $(site.parentNode.parentNode).css("display", "inline");
+            $(site.parentNode.parentNode).css("display", "block");
         }
         
         // Teste específico para cada rede social/site
         if (rs.rows.item(0).website == '') {
             $(site).css("display", "none");
         } else {
-            $(site).find("a").attr("onclick", "abrirLink('" + rs.rows.item(0).website + "'); return false;");
+            $(site).find("a").attr("onclick", "abrirLink('http://" + rs.rows.item(0).website + "'); return false;");
             $(site).css("display", "inline");
         }
         
         if (rs.rows.item(0).facebook == '') {
             $(facebook).css("display", "none");
         } else {
-            $(facebook).find("a").attr("onclick", "abrirLink('" + rs.rows.item(0).facebook + "'); return false;");
+            $(facebook).find("a").attr("onclick", "abrirLink('http://" + rs.rows.item(0).facebook + "'); return false;");
             $(facebook).css("display", "inline");
         }
         
         if (rs.rows.item(0).twitter == '') {
             $(twitter).css("display", "none");
         } else {
-            $(twitter).find("a").attr("onclick", "abrirLink('" + rs.rows.item(0).twitter + "'); return false;");
+            $(twitter).find("a").attr("onclick", "abrirLink('http://" + rs.rows.item(0).twitter + "'); return false;");
             $(twitter).css("display", "inline");
         }
         
         if (rs.rows.item(0).googlep == '') {
             $(googlep).css("display", "none");
         } else {
-            $(googlep).find("a").attr("onclick", "abrirLink('" + rs.rows.item(0).googlep + "'); return false;");
+            $(googlep).find("a").attr("onclick", "abrirLink('http://" + rs.rows.item(0).googlep + "'); return false;");
             $(googlep).css("display", "inline");
         }
         
         // Por último, Descobre a distância entre as localizações
-        if (google != null && google != undefined)
+        if (app.helper.internetDisponivel() && google != null && google != undefined)
         {
             var latitude = 0.0, 
                 longitude = 0.0,
@@ -125,23 +126,51 @@ app.visualizarEmpresa = function() {
                    function (response, status) {
                        // Se a consulta deu certo, trata os resultados obtidos
                        if (status == google.maps.GeocoderStatus.OK) {
-                           distance.innerHTML = response.rows[0].elements[0].distance.text;
-                           $(distance).fadeIn();
-                       };
+                           if (response.rows[0].elements[0].status != "ZERO_RESULTS") {
+                               distance.innerHTML = response.rows[0].elements[0].distance.text;
+                               $(distance).fadeIn();
+                           }
+                       }
                    });
             });
         }
         
-        // Exibe o mapa se clicado
-        //$("#btn_mapa").click(function () {
+        // Exibe a imagem da empresa
+        if (app.helper.internetDisponivel()) {
+            var altura = screen.height/2;
+            
+            // Verifica se é possível abrir a imagem da empresa
+            $.ajax({
+                /*url: CAMINHO_IMAGENS,
+                success: function (e) {
+                    $("#emp_img").show();
+                    emp_img.innerHTML = "<div style=\"width:100%; max-height:"+ altura +"px; height:" + altura + "px; background-image: url('" + CAMINHO_IMAGENS +"'); background-size:cover\" />";
+                }*/
+                url: CAMINHO_IMAGENS + rs.rows.item(0).id,
+                success: function (response) {
+                    if (response.success)
+                    {
+                        $("#emp_img").show();
+                        //emp_img.innerHTML = "<div style=\"width:100%; max-height:"+ altura +"px; height:" + altura + "px; background-image: url('http://"+ response.caminho +"'); background-repeat:no-repeat; background-size:cover\" />";
+                        emp_img.innerHTML = "<div style='text-align:center'><img style=\"width:95%; max-height:"+ altura +"px;\" src='http://"+ response.caminho +"' />";
+                    }
+                     else {
+                        $("#emp_img").hide();
+                    }
+                }
+            });
+        } else {
+            $("#emp_img").hide();
+        }
+        
+        // Exibe o mapa
         if (app.helper.internetDisponivel()) {
             var altura = screen.height/2;
             $("#mapa").show();
-            mapa.innerHTML = "<iframe class='mapa-view' height='"+ altura +"' frameborder='0' src='https://www.google.com/maps/embed/v1/place?key=" + API_KEY_GOOGLE_MAPS_EMBED +"&q=" + enderecoCompleto + "' />"
+            mapa.innerHTML = "<iframe class='mapa-view'  height='"+ altura +"' frameborder='0' src='https://www.google.com/maps/embed/v1/place?key=" + API_KEY_GOOGLE_MAPS_EMBED +"&q=" + enderecoCompleto + "' />";
         } else {
             $("#mapa").hide();
         }
-        //});
 	}
     
 	var db = DB;
@@ -152,8 +181,13 @@ app.visualizarEmpresa = function() {
             sql += " ORDER BY empresas.name";
 
         // Executa a consulta
-		tx.executeSql(sql, [ID_EMPRESA], 
-					  render, 
-					  app.onError);
+        try {
+            tx.executeSql(sql, [ID_EMPRESA], 
+                          render, 
+                          app.onError);
+        } catch(err){}
 	});
+    
+    // Atualiza os banners
+    exibirBanner();
 }
