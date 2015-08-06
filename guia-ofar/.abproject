@@ -4,9 +4,9 @@
   "projectVersion": 1,
   "AppIdentifier": "com.lfsevergnini.guiaofar",
   "DisplayName": "Guia Ofar",
-  "Author": "",
+  "Author": "Luís Filipe Severgnini",
   "Description": "Guia de Negócios Ofar",
-  "BundleVersion": "1.0",
+  "BundleVersion": "1.1",
   "AndroidVersionCode": "1",
   "iOSDeviceFamily": [
     "1",
@@ -21,12 +21,11 @@
   "WP8ProductID": "{60eef191-2e6e-4960-9a0b-fed5c7b07bca}",
   "ProjectTypeGuids": "{070BCB52-5A75-4F8C-A973-144AF0EAFCC9}",
   "CorePlugins": [
-    "com.phonegap.plugins.sqlite",
+    "com.phonegap.plugins.sqlite@1.0.2",
     "org.apache.cordova.device",
     "org.apache.cordova.device-orientation",
     "org.apache.cordova.dialogs",
-    "org.apache.cordova.file",
-    "org.apache.cordova.file-transfer",
+    "org.apache.cordova.geolocation",
     "org.apache.cordova.inappbrowser",
     "org.apache.cordova.network-information",
     "org.apache.cordova.splashscreen"
@@ -40,15 +39,10 @@
     "android.permission.ACCESS_COARSE_LOCATION",
     "android.permission.ACCESS_FINE_LOCATION",
     "android.permission.ACCESS_LOCATION_EXTRA_COMMANDS",
-    "android.permission.READ_PHONE_STATE",
-    "android.permission.INTERNET",
-    "android.permission.WRITE_EXTERNAL_STORAGE",
-    "android.permission.ACCESS_NETWORK_STATE",
-    "android.permission.BROADCAST_STICKY"
+    "android.permission.INTERNET"
   ],
   "DeviceOrientations": [
-    "Portrait",
-    "Landscape"
+    "Portrait"
   ],
   "AndroidHardwareAcceleration": "True",
   "iOSStatusBarStyle": "Default",
@@ -58,5 +52,7 @@
     "ID_RESOLUTION_HD720P"
   ],
   "Framework": "Cordova",
-  "FrameworkVersion": "3.5.0"
+  "FrameworkVersion": "3.7.0",
+  "WP8WindowsPublisherName": "CN=Telerik",
+  "WP8PackageIdentityName": "1234Telerik.com.lfsevergnini.guiaofar"
 }
